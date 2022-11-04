@@ -9,30 +9,38 @@ function setContent(id, newvalue) {
 
 const button = document.querySelector("button");
 button.addEventListener("click", async () => {
-    console.log(`Recommending...`)
+    const heroic = 'https://www.heroic.us';
+    const optimize = 'https://optimize.me';
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    var activeTab = tabs[0];
+    var activeTabUrl = activeTab.url;
 
-    const loader = `<div class="loadersmall"></div>`;
-    setContent("loader", loader);
-    setContent("button-wrapper", null);
+    if (activeTabUrl.startsWith(heroic) || activeTabUrl.startsWith(optimize)) {
+        console.log(`Recommending...`)
 
-    const userDataResponse = await getUserData();
-    const userData = await userDataResponse.json();
-    console.log(userData);
+        const loader = `<div class="loadersmall"></div>`;
+        setContent("loader", loader);
+        setContent("button-wrapper", null);
 
-    const recommendedData = await recommend(userData);
-    console.log("Recommended results:");
-    console.log(recommendedData);
+        const userDataResponse = await getUserData();
+        const userData = await userDataResponse.json();
+        console.log(userData);
 
-    let bullets = "<ul>";
-    for (let i = 0; i < recommendedData.length; i++) {
-        const url = recommendedData[i].url;
-        const title = recommendedData[i].title;
-        bullets += `<li><div class="circle"><span>${i + 1}</span></div><a href='${url}'>${title}</a></li>`
+        const recommendedData = await recommend(userData);
+        console.log("Recommended results:");
+        console.log(recommendedData);
+
+        let bullets = "<ul>";
+        for (let i = 0; i < recommendedData.length; i++) {
+            const url = recommendedData[i].url;
+            const title = recommendedData[i].title;
+            bullets += `<li><div class="circle"><span>${i + 1}</span></div><a href='${url}'>${title}</a></li>`
+        }
+        bullets += "</ul>"
+        setContent("recommendedResults", bullets);
+
+        setContent("loader", null);
     }
-    bullets += "</ul>"
-    setContent("recommendedResults", bullets);
-
-    setContent("loader", null);
 });
 
 async function getUserData() {

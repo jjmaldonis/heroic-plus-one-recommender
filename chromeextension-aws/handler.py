@@ -138,6 +138,7 @@ def recommend(liked_indexes: List[int], completed_indexes: List[int], correlatio
         results.append((i, mean))
     results.sort(key=lambda pair: pair[1], reverse=True)
 
+    # Apply additional normalization to account for the word count. This normalization is auto-calculated using a linear regression.
     if apply_word_count_fix:
         X = [plus_ones_metadata[i].word_count for i, _ in results]
         Y = [mean for i, mean in results]
