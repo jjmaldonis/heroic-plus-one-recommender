@@ -1,0 +1,28 @@
+{
+    "manifest_version": 3,
+    "name": "Heroic +1 Recommender",
+    "description": "Recommends +1s based on your favorites",
+    "version": "1.0",
+    "icons": {
+        "16": "images/icon.png",
+        "32": "images/icon.png",
+        "48": "images/icon.png",
+        "128": "images/icon.png"
+    },
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "cookies"
+    ],
+    "host_permissions": [
+        "https://www.optimize.me/*",
+        "https://www.heroic.us/*",
+        "https://e137lli3v6.execute-api.us-east-1.amazonaws.com/*"
+    ]
+}
