@@ -57,7 +57,7 @@ window.onload = function () {
         "Take a look at these!",
     ];
     let buttonText = recommendButtonText[randomInt(0, recommendButtonText.length)];
-    if (buttonText == "Check this s**t out!") {
+    if (buttonText == "Check this sh*t out!") {
         buttonText = recommendButtonText[randomInt(0, recommendButtonText.length)];
     }
     setContent("recommendButton", buttonText);
@@ -106,7 +106,7 @@ button.addEventListener("click", async () => {
 
         const tooltips = [
             "Stay in your rut",
-            "Tow the line",
+            "Toe the line",
             "More like this",
             "Check this one out",
             "Here's something similar",
@@ -119,7 +119,6 @@ button.addEventListener("click", async () => {
             "Check it out",
             "Explore similar concepts",
             "Discover another",
-            "Discover another like this",
             "Explore more",
         ];
         const different_tooltips = [
@@ -167,7 +166,7 @@ button.addEventListener("click", async () => {
         openLinksInSameTab();
     } else {
         setContent("button-wrapper", null);
-        setContent("error", `Go to <a href="https://www.heroic.us/optimize/plus-one">heroic.us</a> to see your recommendations.`);
+        setContent("error", `<a href="https://www.heroic.us/optimize/plus-one">Go to heroic.us to see your recommendations.</a>`);
         openLinksInSameTab();
     }
 });
