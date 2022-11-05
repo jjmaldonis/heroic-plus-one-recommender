@@ -6,14 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="./popup.css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
   <h1>Herioc Lightbulb +1</h1>
-  <div id="button-wrapper"><button class="btn">Recommend!</button></div>
+  <div id="error"></div>
+  <div id="button-wrapper"><button id="recommendButton" class="btn">Show me the light!</button></div>
   <ul></ul>
   <div id="recommendedResults"></div>
   <div id="loader"></div>
+  <div id="help-text"></div>
 
   <script src="./popup.js" type="module"></script>
 </body>

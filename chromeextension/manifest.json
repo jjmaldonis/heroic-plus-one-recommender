@@ -4,17 +4,16 @@
     "description": "Recommends +1s based on your favorite Herioc +1s at www.heroic.us",
     "version": "0.0.1",
     "icons": {
-        "16": "images/icon.png",
-        "32": "images/icon.png",
-        "48": "images/icon.png",
-        "128": "images/icon.png"
+        "16": "images/icon-128.png",
+        "32": "images/icon-128.png",
+        "48": "images/icon-128.png",
+        "128": "images/icon-128.png"
     },
     "action": {
         "default_popup": "popup.html"
     },
     "permissions": [
         "activeTab",
-        "scripting",
         "cookies"
     ],
     "host_permissions": [

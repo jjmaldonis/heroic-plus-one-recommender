@@ -2,6 +2,7 @@ from typing import List
 import json
 import boto3
 import io
+import random
 import numpy as np
 
 s3 = boto3.client('s3')
@@ -224,12 +225,17 @@ def lambda_handler(event, context):
         print(f"Recommended +1s:")
         recommended = recommend(liked_indexes, completed_indexes, correlation, plus_ones_metadata, True)
         recommended_plus_ones: List[PlusOne] = []
-        for i in recommended[:N]:
+        for i in recommended[:N - 1]:
             recommended_plus_ones.append(plus_ones_metadata[i])
             print(f"{plus_ones_metadata[i].title} -- {plus_ones_metadata[i].url}")
             similar = get_similar_plus_ones(correlation=correlation, i=i, count=3, restrict_to=liked_indexes)
             for j in similar:
                 print(f"   {plus_ones_metadata[j].title}")
+
+        last_count = 20
+        choice = random.randint(1, last_count)
+        not_recommended = plus_ones_metadata[recommended[-choice]]
+        recommended_plus_ones.append(not_recommended)
         result = [po.to_dict(exclude=("content",)) for po in recommended_plus_ones]
 
     return {
