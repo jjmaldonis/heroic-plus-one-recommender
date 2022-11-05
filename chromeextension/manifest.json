@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "Heroic +1 Recommender",
-    "description": "Recommends +1s based on your favorites",
-    "version": "1.0",
+    "name": "Heroic Lightbulb +1",
+    "description": "Recommends +1s based on your favorite Herioc +1s at www.heroic.us",
+    "version": "0.0.1",
     "icons": {
         "16": "images/icon.png",
         "32": "images/icon.png",
