@@ -37,7 +37,7 @@ function helpIcon(tooltip) {
 
 window.onload = function () {
     const recommendButtonText = [
-        "Go again",
+        "Go again!",
         "Feed me knowledge!",
         "I'm hungry, feed me more!",
         "Give me more!",
@@ -105,29 +105,33 @@ button.addEventListener("click", async () => {
         const L = recommendedData.length;
 
         const tooltips = [
-            "Stay in your rut",
-            "Toe the line",
-            "More like this",
+            // "Stay in your rut",
+            // "Toe the line",
+            // "Give me another",
+            "Show me this one",
+            "Explore this idea",
+            "Check it out",
             "Check this one out",
             "Here's something similar",
             "You might like this one",
-            "Expand on that idea",
-            "Give me another",
+            "Expand on this",
             "Explore a tangent",
             "Dig deeper",
             "Dive deeper",
-            "Check it out",
-            "Explore similar concepts",
+            "More fun facts",
+            "Explore this concept",
             "Discover another",
             "Explore more",
+            "Here's a similar idea",
+            "Here's another along those lines",
         ];
         const different_tooltips = [
             "Expand your horizons",
             "Think different",
             "Shake up your world",
-            "A contrarians view",
-            // "Get out of your rut",
-            "Think outside your box",
+            "A contrarian's view",
+            "Jump out of your rut",
+            "Think outside the box",
             "What's outside your box?",
         ];
 
