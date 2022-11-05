@@ -35,7 +35,8 @@ function helpIcon(tooltip) {
     return helpIcon;
 }
 
-window.onload = function () {
+function getRecommendationButtonText() {
+    const sht = "Check this sh*t out!";
     const recommendButtonText = [
         "Go again!",
         "Feed me knowledge!",
@@ -53,18 +54,17 @@ window.onload = function () {
         "Show me the light!",
         "Check these out!",
         "How about these?",
-        "Check this sh*t out!",
+        sht,
         "Take a look at these!",
     ];
     let buttonText = recommendButtonText[randomInt(0, recommendButtonText.length)];
-    if (buttonText == "Check this sh*t out!") {
+    if (buttonText == sht) {
         buttonText = recommendButtonText[randomInt(0, recommendButtonText.length)];
     }
-    setContent("recommendButton", buttonText);
+    return buttonText;
 }
 
-const button = document.querySelector("button");
-button.addEventListener("click", async () => {
+window.onload = async function () {
     const heroic = 'https://www.heroic.us';
     const optimize = 'https://optimize.me';
     const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -72,108 +72,40 @@ button.addEventListener("click", async () => {
     var activeTabUrl = activeTab.url;
 
     if (activeTabUrl.startsWith(heroic) || activeTabUrl.startsWith(optimize)) {
-        console.log(`Recommending...`)
+        const buttonText = getRecommendationButtonText();
+        setContent("recommendButton", buttonText);
 
-        const loader = `<div class="loadersmall"></div>`;
-        setContent("loader", loader);
-        setContent("button-wrapper", null);
-
-        const bearerToken = await getBearerToken();
-        if (!bearerToken) {
-            setContent("loader", null);
-            setContent("error", `Please login to see your recommendations.`);
-            openLinksInSameTab();
-            return;
-        }
-
-        const userDataResponse = await getUserData(bearerToken);
-        const userData = await userDataResponse.json();
-        console.log(userData);
-        const completed = userData.completed.itemIds;
-        const faves = userData.faves.itemIds;
-        if (completed.length === 0 || faves.length === 0) {
-            setContent("button-wrapper", null);
-            setContent("error", `You must have at least one completed and one favorited +1 to get recommendations.`);
-            openLinksInSameTab();
-            return;
-        }
-
-        const N = 5;
-        const recommendedData = await recommend(userData, N);
-        console.log("Recommended results:");
-        console.log(recommendedData);
-        const L = recommendedData.length;
-
-        const tooltips = [
-            // "Stay in your rut",
-            // "Toe the line",
-            // "Give me another",
-            "Show me this one",
-            "Explore this idea",
-            "Check it out",
-            "Check this one out",
-            "Here's something similar",
-            "You might like this one",
-            "Expand on this",
-            "Explore a tangent",
-            "Dig deeper",
-            "Dive deeper",
-            "More fun facts",
-            "Explore this concept",
-            "Discover another",
-            "Explore more",
-            "Here's a similar idea",
-            "Here's another along those lines",
-        ];
-        const different_tooltips = [
-            "Expand your horizons",
-            "Think different",
-            "Shake up your world",
-            "A contrarian's view",
-            "Jump out of your rut",
-            "Think outside the box",
-            "What's outside your box?",
-        ];
-
-        let bullets = "<ul>";
-        for (let i = 0; i < recommendedData.length - 1; i++) {
-            let url = recommendedData[i].url;
-            let title = recommendedData[i].title;
-            let tooltip = tooltips[randomInt(0, tooltips.length)];
-            bullets += `<li><div class="circle-red"><span>${i + 1}</span></div><a href="${url}" title="${tooltip}">${title}</a></li>`
-        }
-        let url = recommendedData[L - 1].url;
-        let title = recommendedData[L - 1].title;
-        let tooltip = different_tooltips[randomInt(0, different_tooltips.length)];
-        bullets += `<li><div class="circle-black"><span>${L}</span></div><a href="${url}" title="${tooltip}">${title}</a></li>`
-        bullets += "</ul>"
-        setContent("recommendedResults", bullets);
-
-        const help = `
-        <hr>
-        <ul>
-          <li>
-            <div class="circle-red-small"></div>
-            <span>Your top recommendations.</span>
-          </li>
-          <li>
-            <div class="circle-black-small"></div>
-            <span>Shake up your world.</span>
-          </li>
-        </ul>
-        `;
-
-        // setContent("help-text", help);
-
-        setContent("loader", null);
-
-        openLinksInSameTab();
+        const button = document.querySelector("button");
+        button.addEventListener("click", async () => {
+            run();
+        });
     } else {
         setContent("button-wrapper", null);
         setContent("error", `<a href="https://www.heroic.us/optimize/plus-one">Go to heroic.us to see your recommendations.</a>`);
-        openLinksInSameTab();
+
+        function openLink() {
+            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                var tab = tabs[0];
+                chrome.tabs.update(tab.id, { url: "https://www.heroic.us/optimize/plus-one" });
+            });
+        }
+
+        var hrefs = document.getElementsByTagName("a");
+        hrefs[0].onclick = function () {
+            setTimeout(function () {
+                openLink();
+                setContent("button-wrapper", `<button id="recommendButton" class="btn"></button>`);
+                const buttonText = getRecommendationButtonText();
+                setContent("recommendButton", buttonText);
+                setContent("error", null);
+                const button = document.querySelector("button");
+                button.addEventListener("click", async () => {
+                    run();
+                });
+            }, 500);
+        }
     }
-});
+}
 
 async function getBearerToken() {
     const cookie = await chrome.cookies.get({
@@ -212,4 +144,103 @@ async function recommend(userData, count) {
 
     const recommendedData = await recommendedResponse.json();
     return recommendedData;
+}
+
+async function run() {
+    console.log(`Recommending...`)
+
+    const loader = `<div class="loadersmall"></div>`;
+    setContent("loader", loader);
+    setContent("button-wrapper", null);
+
+    const bearerToken = await getBearerToken();
+    if (!bearerToken) {
+        setContent("loader", null);
+        setContent("error", `Please login to see your recommendations.`);
+        openLinksInSameTab();
+        return;
+    }
+
+    const userDataResponse = await getUserData(bearerToken);
+    const userData = await userDataResponse.json();
+    console.log(userData);
+    const completed = userData.completed.itemIds;
+    const faves = userData.faves.itemIds;
+    if (completed.length === 0 || faves.length === 0) {
+        setContent("button-wrapper", null);
+        setContent("error", `You must have at least one completed and one favorited +1 to get recommendations.`);
+        openLinksInSameTab();
+        return;
+    }
+
+    const N = 5;
+    const recommendedData = await recommend(userData, N);
+    console.log("Recommended results:");
+    console.log(recommendedData);
+    const L = recommendedData.length;
+
+    const tooltips = [
+        // "Stay in your rut",
+        // "Toe the line",
+        // "Give me another",
+        "Show me this one",
+        "Explore this idea",
+        "Check it out",
+        "Check this one out",
+        "Here's something similar",
+        "You might like this one",
+        "Expand on this",
+        "Explore a tangent",
+        "Dig deeper",
+        "Dive deeper",
+        "More fun facts",
+        "Explore this concept",
+        "Discover another",
+        "Explore more",
+        "Here's a similar idea",
+        "Here's another along those lines",
+    ];
+    const different_tooltips = [
+        "Expand your horizons",
+        "Think different",
+        "Shake up your world",
+        "A contrarian's view",
+        "Jump out of your rut",
+        "Think outside the box",
+        "What's outside your box?",
+    ];
+
+    let bullets = "<ul>";
+    for (let i = 0; i < recommendedData.length - 1; i++) {
+        let url = recommendedData[i].url;
+        let title = recommendedData[i].title;
+        let tooltip = tooltips[randomInt(0, tooltips.length)];
+        bullets += `<li><div class="circle-red"><span>${i + 1}</span></div><a href="${url}" title="${tooltip}">${title}</a></li>`
+    }
+    let url = recommendedData[L - 1].url;
+    let title = recommendedData[L - 1].title;
+    let tooltip = different_tooltips[randomInt(0, different_tooltips.length)];
+    bullets += `<li><div class="circle-black"><span>${L}</span></div><a href="${url}" title="${tooltip}">${title}</a></li>`
+    bullets += "</ul>"
+    setContent("recommendedResults", bullets);
+
+    const help = `
+        <hr>
+        <ul>
+          <li>
+            <div class="circle-red-small"></div>
+            <span>Your top recommendations.</span>
+          </li>
+          <li>
+            <div class="circle-black-small"></div>
+            <span>Shake up your world.</span>
+          </li>
+        </ul>
+        `;
+
+    // setContent("help-text", help);
+
+    setContent("loader", null);
+
+    openLinksInSameTab();
 }
